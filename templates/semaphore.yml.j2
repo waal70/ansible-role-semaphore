@@ -1,0 +1,23 @@
+services:
+  semaphore:
+    image: semaphoreui/semaphore:v2.16.51
+    container_name: ansible-semaphore
+    restart: unless-stopped
+    # This is a workaround for permission errors on config.json
+    user: "${UID}:${GID}"
+    ports:
+      - 3002:3000
+    environment:
+      PUID: 1001
+      PGID: 1001
+      SEMAPHORE_DB_DIALECT: sqlite
+      SEMAPHORE_ADMIN: {{ semaphore_admin }}
+      SEMAPHORE_ADMIN_PASSWORD: {{ semaphore_admin_password }}
+      SEMAPHORE_ADMIN_NAME: {{ semaphore_admin_name }}
+      SEMAPHORE_ADMIN_EMAIL: {{ semaphore_admin_email }}
+      ANSIBLE_HOST_KEY_CHECKING: "False"
+    volumes:
+      - {{ semaphore_vol_home }}:/home/semaphore/ansible:ro
+      - {{ semaphore_vol_data }}:/var/lib/semaphore
+      - {{ semaphore_vol_etc }}:/etc/semaphore
+

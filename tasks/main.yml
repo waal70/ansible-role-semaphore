@@ -1,0 +1,43 @@
+---
+# tasks file for waal70.dev_tools
+- name: "Set fact for user to run docker exec under"
+  ansible.builtin.set_fact:
+    docker_exec_user: "{{ ansible_facts['env'].SUDO_USER | default(ansible_facts['env'].USER, true) | default(ansible_facts['user_id'], true) }}"
+
+- name: Include vaulted password file
+  ansible.builtin.include_vars:
+    file: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ private_repo }}/{{ ansible_vault }}/{{ ansible_role_name }}-vars.yml"
+      skip: true
+
+- name: Ensure the persistent data paths are created and chowned correctly
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0644'
+    owner: '1001'
+    group: '1001'
+  with_items:
+    - "{{ semaphore_vol_home }}"
+    - "{{ semaphore_vol_data }}"
+    - "{{ semaphore_vol_etc }}"
+
+- name: "Template the semaphore.yml file to the role's files/ directory"
+  ansible.builtin.template:
+    src: semaphore.yml.j2
+    dest: "{{ role_path }}/files/semaphore.yml"
+    owner: "{{ interactive_user }}"
+    group: "{{ interactive_user }}"
+    mode: '0644'
+    force: true
+  delegate_to: localhost
+
+- name: "Include role to deploy using Portainer"
+  ansible.builtin.include_role:
+    name: waal70.portainer
+  vars:
+    stack_list:
+      - name: semaphore
+        file: semaphore.yml # file is in files/ of this role

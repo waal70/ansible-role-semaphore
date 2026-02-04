@@ -1,0 +1,9 @@
+---
+semaphore_admin: admin
+semaphore_admin_password: changeme
+semaphore_admin_name: Admin
+semaphore_admin_email: admin@localhost
+
+semaphore_vol_home: "somepath"
+semaphore_vol_data: "someotherpath"
+semaphore_vol_etc: "andanother"
