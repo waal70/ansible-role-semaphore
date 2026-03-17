@@ -24,10 +24,10 @@
     - "{{ semaphore_vol_data }}"
     - "{{ semaphore_vol_etc }}"
 
-- name: "Template the semaphore.yml file to the role's files/ directory"
+- name: "Template the service compose file to the role's files/ directory for {{ service_name }}"
   ansible.builtin.template:
-    src: semaphore.yml.j2
-    dest: "{{ role_path }}/files/semaphore.yml"
+    src: "{{ service_name }}.yml.j2"
+    dest: "{{ role_path }}/files/{{ service_name }}.yml"
     owner: "{{ interactive_user }}"
     group: "{{ interactive_user }}"
     mode: '0644'

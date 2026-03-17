@@ -5,5 +5,10 @@ semaphore_admin_name: Admin
 semaphore_admin_email: admin@localhost
 
 semaphore_vol_home: "somepath"
-semaphore_vol_data: "someotherpath"
-semaphore_vol_etc: "andanother"
+semaphore_vol_data: "{{ service_db }}"
+semaphore_vol_etc: "{{ service_data }}/etc"
+
+# These should be overriden from your site's group_vars/all.yml
+service_data: "fixme"
+service_db: "fixmetoo"
+service_name: "forgottooverride"
